@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MySQL Code Snippet</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        pre {
+            background-color: #f4f4f4;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        code {
+            display: block;
+            white-space: pre;
+            font-family: Consolas, "Courier New", monospace;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <h1>MySQL Code Snippet</h1>
+    <pre><code>
+        CREATE DATABASE Breakdown_Company;
+        USE Breakdown_Company;
+        
+        CREATE TABLE Member
+            (
+                ID INT PRIMARY KEY,
+                FIRSTName varchar(20), 
+                LASTName varchar(20), 
+                Location varchar(20) 
+            );
+        CREATE TABLE Vehicle
+            (
+                VehicleReg varchar(10) PRIMARY KEY,
+                VehicleMake varchar(10),
+                VehicleModel varchar(10),
+                MemberID INT,
+                FOREIGN KEY (MemberID) references Member(ID)
+            );
+        CREATE TABLE Engineer
+            (
+                EngineerID INT PRIMARY KEY,
+                FIRSTName VARCHAR(20),
+                LASTName VARCHAR(20)
+            );
+        /*
+        CREATE TABLE Breakdown
+            (
+                B_ID INT PRIMARY KEY,
+                VehicleReg VARCHAR(10),
+                EngineerID INT,
+                B_DATE DATE,
+                B_TIME TIME,
+                B_Loc VARCHAR(20),
+                FOREIGN KEY (VehicleReg) REFERENCES Vehicle(VehicleReg),
+                FOREIGN KEY (EngineerID) REFERENCES Engineer(EngineerID)
+            );
+        */
+            
+        
+        CREATE TABLE Breakdown
+            (
+                B_ID INT PRIMARY KEY,
+                VehicleReg VARCHAR(10),
+                EngineerID INT,
+                B_DATE DATE,
+                B_TIME TIME,
+                B_Loc VARCHAR(20)
+            );
+             
+        ALTER TABLE Breakdown
+        ADD CONSTRAINT fk_VehicleReg
+        FOREIGN KEY (VehicleReg) 
+        REFERENCES Vehicle(VehicleReg);
+        
+        ALTER TABLE Breakdown
+        ADD CONSTRAINT fk_EngineerID
+        FOREIGN KEY (EngineerID) 
+        REFERENCES Engineer(EngineerID);
+        
+                
+        INSERT INTO Member (ID, FIRSTName, LASTName, Location)
+        VALUES 
+            (1, 'John', 'Doe', 'Harrow'),
+            (2, 'Diana', 'Johnson', 'Edgware'),
+            (3, 'Tim', 'Brown', 'Greenford'),
+            (4, 'Kelly', 'Smith', 'Wembley'),
+            (5, 'Bill', 'Davis', 'Hounslow');
+        select * from member;
+        
+        INSERT INTO Vehicle (VehicleReg, VehicleMake, VehicleModel, MemberID)
+        VALUES 
+            ('KS56 YLL', 'Toyota', 'Camry', 1),
+            ('TK51 KLM', 'Honda', 'Civic', 2),
+            ('MV15 KSS', 'Ford', 'Focus', 3),
+            ('MG60 YSG', 'Chevrolet', 'Malibu', 4),
+            ('MN51 PQR', 'Nissan', 'Altima', 5),
+            ('PQ73 UTS', 'Toyota', 'Corolla', 1),
+            ('UT59 GRY', 'Honda', 'Accord', 2),
+            ('VW70 LGH', 'Ford', 'Fiesta', 3);
+            
+        INSERT INTO Engineer (EngineerID, FIRSTName, LASTName)
+        VALUES 
+            (1, 'Adam', 'Williams'),
+            (2, 'Bob', 'Taylor'),
+            (3, 'Charlie', 'Lee');
+            
+        INSERT INTO Breakdown (B_ID, VehicleReg, EngineerID, B_DATE, B_TIME, B_Loc)
+        VALUES 
+            (1, 'KS56 YLL', 1, '2024-06-01', '08:30:00', 'Greenford'),
+            (2, 'TK51 KLM', 2, '2024-06-01', '13:15:00', 'Harrow'),
+            (3, 'MV15 KSS', 3, '2024-06-02', '10:00:00', 'Wembley'),
+            (4, 'MG60 YSG', 1, '2024-05-15', '11:30:00', 'Wembley'),
+            (5, 'MN51 PQR', 2, '2024-05-20', '12:00:00', 'Harrow'),
+            (6, 'KS56 YLL', 3, '2024-06-03', '14:00:00', 'Edgware'),
+            (7, 'PQ73 UTS', 1, '2024-04-22', '12:30:00', 'Harrow'),
+            (8, 'UT59 GRY', 2, '2024-04-22', '09:45:00', 'Edgware'),
+            (9, 'VW70 LGH', 3, '2024-04-24', '13:00:00', 'Greenford'),
+            (10, 'TK51 KLM', 1, '2024-06-05', '18:15:00', 'Edgware'),
+            (11, 'MN51 PQR', 2, '2024-06-06', '11:15:00', 'Hounslow'),
+            (12, 'MV15 KSS', 3, '2024-06-07', '11:30:00', 'Harrow');
+            
+        select * from Breakdown;
+            -- Task 3
+            
+            -- 3.1) The names of members who live in a location e.g. For example, London. 
+        SELECT FirstName FROM Member WHERE Location= 'Greenford';
+        SELECT FIRSTName, LASTName FROM Member WHERE Location= 'Hounslow';
+        
+            -- 3.2) All cars registered with the company e.g. all Nissan cars.
+        SELECT * FROM  Vehicle WHERE VehicleMake= 'Toyota';
+        
+            -- 3.3) The number of engineers that work for the company.
+        SELECT COUNT(*) AS 'Total engineers' FROM Engineer;
+        
+            -- 3.4) The number of members registered.
+        SELECT COUNT(*) AS 'Total members' FROM Member;
+        
+            -- 3.5) All the breakdown after a particular date
+        SELECT * FROM Breakdown WHERE B_DATE >('2024-05-29');
+        
+            -- 3.6) All the breakdown between 2 dates
+        SELECT * FROM Breakdown WHERE B_DATE BETWEEN ('2024-04-22') AND ('2024-05-20');
+        
+            -- 3.7) The number of time a particular vehicle has broken down
+        SELECT COUNT(*) AS 'Total Breakdown' FROM Breakdown WHERE VehicleReg= ('KS56 YLL');
+        
+            -- 3.8) The number of vehicles broken down more than once
+        /*
+        SELECT VehicleReg, COUNT(*) AS Broken_More_than_Once
+        FROM Breakdown
+        GROUP BY VehicleReg
+        HAVING COUNT(*) >= 2;
+        */
+        
+        SELECT COUNT(*) AS Total_Vehicle_Broken_More_than_once
+        FROM 
+            (
+                SELECT VehicleReg
+                FROM Breakdown
+                GROUP BY VehicleReg
+                HAVING COUNT(*)  > 1 
+            ) 
+        AS Subquery;
+         
+        -- Task 4
+        
+            -- 4.1) All the vehicles a member owns. For example, Matt 
+        SELECT *
+        FROM Vehicle
+        WHERE MemberID = 
+            (
+                SELECT ID
+                FROM Member
+                WHERE FIRSTName = ('Bill')
+            );
+            
+            -- 4.2) The number of vehicles each member has – sort the data based on the number of car from highest to lowest.  
+        SELECT M.ID, M.FIRSTName, M.LASTName, COUNT(V.VehicleReg) AS 'Total Number Of Vehicles'
+        FROM Member M
+        JOIN Vehicle V ON M.ID = V.MemberID
+        GROUP BY M.ID, M.FIRSTName, M.LASTName
+        ORDER BY 'Total Number Of Vehicles' DESC;
+        
+            -- 4.3) All vehicles that have broken down in a particular location along with member details. 
+        SELECT B.B_Loc AS 'Breakdown Location',M.ID AS 'CustomerID',CONCAT(M.FIRSTName, ' ', M.LASTName) 
+        AS 'Customer Name',V.VehicleReg,CONCAT(V.VehicleMake, ' ', V.VehicleModel) AS 'Vehicle' 
+        FROM Breakdown B
+        JOIN Vehicle V ON B.VehicleReg = V.VehicleReg
+        JOIN Member M ON V.MemberID = M.ID
+        WHERE B.B_Loc = 'Edgware';
+        
+            -- 4.4) A list of all breakdown along with member and engineer details between two dates. 
+        SELECT B.B_ID, B.B_DATE, B.B_TIME, B.B_Loc,V.VehicleReg, V.VehicleMake, V.VehicleModel,CONCAT(M.FIRSTName, '   ', M.LASTName) 
+        AS 'Customer Name',CONCAT(E.FIRSTName, '   ', E.LASTName)AS 'Engineer Name' 
+        FROM Breakdown B
+        JOIN Vehicle V ON B.VehicleReg = V.VehicleReg
+        JOIN Member M ON V.MemberID = M.ID
+        JOIN Engineer E ON B.EngineerID = E.EngineerID
+        WHERE B.B_DATE BETWEEN '2024-06-01' AND '2024-06-07';
+        
+            -- 4.5) A further 3 relational queries of your choice that are meaningful to the company.    
+            -- 4.5.1) Breakdown locations and the number of breakdowns at each location:
+        SELECT B.B_Loc AS Location, COUNT(B.B_ID) AS 'Breakdown Count'
+        FROM Breakdown B
+        GROUP BY B.B_Loc
+        ORDER BY 'Breakdown Count' DESC;
+        
+            -- 4.5.2) All breakdowns handled by a particular engineer:
+        SELECT B.B_ID,CONCAT(B.B_DATE, '   ', B.B_TIME) AS 'Date & Time', B.B_Loc,V.VehicleReg,CONCAT(V.VehicleMake, '  ', 
+        V.VehicleModel) AS 'Vehicle',CONCAT(M.FIRSTName, '   ', M.LASTName) AS 'Customer Name'
+        FROM Breakdown B
+        JOIN Vehicle V ON B.VehicleReg = V.VehicleReg
+        JOIN Member M ON V.MemberID = M.ID
+        WHERE B.EngineerID = 1;
+        
+            -- 4.5.3) Customer who had more than one breakdown:
+        SELECT M.ID as 'Customer ID',CONCAT(M.FIRSTName, '   ', M.LASTName) AS 'Customer Name', COUNT(B.B_ID) AS 'Breakdown Count'
+        FROM Member M
+        JOIN Vehicle V ON M.ID = V.MemberID
+        JOIN Breakdown B ON V.VehicleReg = B.VehicleReg
+        GROUP BY M.ID, M.FIRSTName, M.LASTName, M.Location
+        HAVING COUNT(B.B_ID) > 1;
+        
+        
+            -- Task 5 Using W3Schools or any other resource research the following functions – Avg, Max, Min, Sum.
+        
+            -- AVG (Average): The AVG() function returns the average value of a numeric column. 
+            -- It is commonly used to find the mean of a set of numbers.
+            -- Example: Syntax To find the (average) sales amount in the (Sales) table:
+        SELECT AVG(Amount)
+        FROM Sales;
+        
+            -- MAX (Maximum): The MAX() function returns the largest value of the selected column.
+            -- It is used to find the largest value in a column.
+            -- Example: Syntax To find the (maximum) sales amount in the (Sales) table:
+        SELECT MAX(Amount)
+        FROM Sales;
+        
+            -- MIN (Minimum): The MIN() function returns the smallest value of the selected column.
+            -- It is used to find the smallest value in a column.
+            -- Example: Syntax To find the (minimum)sales amount in the (Sales) table:
+        SELECT MIN(Amount)
+        FROM Sales;
+        
+            -- SUM (Sum): The SUM() function returns the total sum of a numeric column.
+            -- It is used to add up all the values in a column.
+            -- Example: Syntax To find the (total) sales amount in the (Sales) table:
+        SELECT SUM(Amount)
+        FROM Sales;
+        
+        -- Explain with examples how each one is used.  Create a separate database with sample data to illustrate your examples.  
+        
+            -- Creating a sample database named CarPartSales dated on 10/06/2024 to illustrate the examples using AVG, MAX, MIN, and SUM functions.
+        CREATE DATABASE CarPartSales;
+        USE CarPartSales;
+        
+        CREATE table Sales
+        (
+            Sales_ID INT PRIMARY KEY AUTO_INCREMENT,
+            Salesperson_ID INT,
+            PartName VARCHAR(50) NOT NULL,
+            Amount DECIMAL(10, 2),
+            SaleDate DATETIME
+        );
+        
+        
+        INSERT INTO Sales (Salesperson_ID, PartName, Amount, SaleDate)
+        VALUES
+            (101, 'Brake Pads', 72.00, '2024-06-10 08:30:00'),
+            (102, 'Oil Filter', 25.00, '2024-06-10 09:15:00'),
+            (101, 'Air Filter', 17.00, '2024-06-10 10:45:00'),
+            (103, 'Battery', 159.00, '2024-06-10 11:30:00'),
+            (102, 'Oil Filter', 35.00, '2024-06-10 13:00:00'),
+            (101, 'Brake Pads', 72.00, '2024-06-10 14:30:00'),
+            (103, '4 Tires', 512.00, '2024-06-10 15:00:00'),
+            (102, 'Windshield Wipers', 45.00, '2024-06-10 15:45:00'),
+            (101, 'Oil Filter', 35.00, '2024-06-10 16:30:00'),
+            (103, 'Headlight', 60.00, '2024-06-10 17:00:00');
+            
+            
+            -- Average Sales Amount
+        SELECT AVG(Amount) AS 'Average Sales'
+        FROM Sales;
+            -- Average Sales = 103.200000
+            
+            -- Maximum Sales Amount
+        SELECT MAX(Amount) AS 'Maximum Sales'
+        FROM Sales;
+            -- Maximum Sales = 512.00
+            
+        -- Minimum Sales Amount
+        SELECT MIN(Amount) AS 'Minimum Sales'
+        FROM Sales;
+        -- Minimum Sales = 17.00
+        
+        -- Total Sales Amount
+        SELECT SUM(Amount) AS 'Total Sales'
+        FROM Sales;
+        -- Total Sales = 1032.00
+        
+        -- Total and Average Sales Amount for Each Salesperson
+        SELECT Salesperson_ID, 
+               SUM(Amount) AS 'Total Sales', 
+               AVG(Amount) AS 'Average Sales'
+        FROM Sales
+        gROUP by Salesperson_ID;
+            -- Total and Average Sales 
+            -- 101 / 196.00 / 49.000000
+            -- 102 / 105.00 / 35.000000
+            -- 103 / 731.00 243.666667
+        
+        
+        
+            -- Task 6 
+            -- Now update 3 data from the employee table 
+                -- Updating Engineer table
+                
+                
+        USE Breakdown_Company;
+        
+        
+        
+        UPDATE Engineer
+        SET FIRSTName = 'Robert', LASTName = 'Johnson'
+        WHERE EngineerID = 2;
+        SELECT * FROM engineer;
+        
+        ALTER TABLE Engineer
+        ADD StartDate DATE;
+        UPDATE Engineer
+        SET StartDate = '2020-01-21'
+        WHERE EngineerID = 1;
+        
+        UPDATE Engineer
+        SET LASTName = 'Bruce Lee'
+        WHERE EngineerID = 3;
+        SELECT * FROM engineer;
+            
+            
+            -- Delete a record from the Member table 
+            
+        UPDATE Vehicle SET MemberID = NULL WHERE MemberID = 4;
+        DELETE FROM Member WHERE ID = 4;
+        
+        SELECT * FROM Member;
+        
+        -- Task 7 
+        -- Create a store procedure which will display the following: 
+        -- If a member has more than one vehicle, then display ‘multi-car policy’ otherwise it should be ‘Single-car-policy’. 
+        
+        DELIMITER //
+        CREATE PROCEDURE CheckCarPolicy()
+        BEGIN SELECT m.ID, m.FIRSTName, m.LASTName,
+                CASE WHEN COUNT(v.VehicleReg) > 1 	THEN 'Multi-car policy' ELSE 'Single-car policy'
+                    END AS CarPolicy
+            FROM Member m
+            LEFT JOIN Vehicle v ON m.ID = v.MemberID
+            GROUP BY m.ID, m.FIRSTName, m.LASTName;
+        END//
+        DELIMITER ;
+        
+        CALL CheckCarPolicy();
+        
+            
+        
+        
+        
+        
+    </code></pre>
+</body>
+</html>
